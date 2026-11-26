@@ -1,0 +1,72 @@
+/* Kraft Homes Signature Preloader Styles */
+
+.kh-preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  perspective: 1600px;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.kh-preloader-door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.2%;
+  background-color: #F7F5F0;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.kh-preloader-door-left {
+  left: 0;
+  transform-origin: left center;
+  border-right: 1px solid rgba(179, 154, 125, 0.28);
+  box-shadow: 12px 0 40px rgba(20, 20, 20, 0.08);
+}
+
+.kh-preloader-door-right {
+  right: 0;
+  transform-origin: right center;
+  border-left: 1px solid rgba(179, 154, 125, 0.28);
+  box-shadow: -12px 0 40px rgba(20, 20, 20, 0.08);
+}
+
+/* Subtle Architectural CAD Drafting Grid */
+.kh-preloader-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(179, 154, 125, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(179, 154, 125, 0.14) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .kh-preloader-grid {
+    background-size: 32px 32px;
+  }
+}
+
+/* Text Mask Clip Utility */
+.kh-mask-reveal {
+  clip-path: inset(0 100% 0 0);
+  will-change: clip-path, opacity, transform;
+}
+
+/* SVG Crisp Rendering */
+.kh-cad-svg line,
+.kh-cad-svg path,
+.kh-cad-svg rect,
+.kh-cad-svg polygon {
+  vector-effect: non-scaling-stroke;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kh-preloader-overlay {
+    transition: opacity 0.25s ease;
+  }
+}

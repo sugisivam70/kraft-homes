@@ -47,7 +47,7 @@ const mobileNavItemVariants = {
   },
 };
 
-function Header() {
+function Header({ revealReady = true }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [logoError, setLogoError] = useState(false);
@@ -101,7 +101,9 @@ function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+          revealReady ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
+        } ${
           isScrolled
             ? 'bg-carbon/95 backdrop-blur-md border-b border-pure-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.28)]'
             : 'bg-gradient-to-b from-carbon/85 via-carbon/45 to-transparent border-b border-transparent'

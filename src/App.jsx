@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
+import Preloader, { shouldSkipPreloader } from './components/Preloader';
 import Header from './components/Header';
 import Hero from './sections/Hero';
 import About from './sections/About';
@@ -21,6 +22,21 @@ import ScrollProgress from './components/ScrollProgress';
 import { initTracking } from './config/tracking';
 
 function App() {
+  const [heroRevealed, setHeroRevealed] = useState(() => shouldSkipPreloader());
+  const [preloaderDone, setPreloaderDone] = useState(() => shouldSkipPreloader());
+  const lenisRef = useRef(null);
+
+  const handleHeroReveal = useCallback(() => {
+    setHeroRevealed(true);
+  }, []);
+
+  const handlePreloaderComplete = useCallback(() => {
+    setPreloaderDone(true);
+    if (lenisRef.current) {
+      lenisRef.current.start();
+    }
+  }, []);
+
   useEffect(() => {
     initTracking();
 
@@ -37,6 +53,11 @@ function App() {
       gestureOrientation: 'vertical',
       smoothWheel: true,
     });
+    lenisRef.current = lenis;
+
+    if (!preloaderDone) {
+      lenis.stop();
+    }
 
     let frameId;
     function raf(time) {
@@ -49,16 +70,28 @@ function App() {
     return () => {
       cancelAnimationFrame(frameId);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
 
+  useEffect(() => {
+    if (preloaderDone && lenisRef.current) {
+      lenisRef.current.start();
+    }
+  }, [preloaderDone]);
+
   return (
     <div className="relative">
+      <Preloader
+        onHeroReveal={handleHeroReveal}
+        onComplete={handlePreloaderComplete}
+      />
+
       <ScrollProgress />
-      <Header />
+      <Header revealReady={heroRevealed} />
 
       <main>
-        <Hero />
+        <Hero revealReady={heroRevealed} />
         <About />
         <Collections />
         <Brands />

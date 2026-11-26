@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124 278" fill="none">
+  <!-- Exact pixel-traced Kraft Homes KH architectural monogram -->
+  <!-- Stroke 1: Primary Left Vertical Stick -->
+  <path d="M29 57 L39 66 L39 278 L29 270 Z" fill="#141414" />
+  <!-- Stroke 2: Secondary Right Vertical Stick -->
+  <path d="M71 0 L81 8 L81 173 L71 165 Z" fill="#141414" />
+  <!-- Stroke 3: Ascending Diagonal Bar -->
+  <path d="M104 56 L115 56 L11 179 L0 179 Z" fill="#141414" />
+  <!-- Stroke 4: Descending Diagonal Leg -->
+  <path d="M0 102 L124 248 L112 248 L0 115 Z" fill="#141414" />
+</svg>

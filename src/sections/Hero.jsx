@@ -47,7 +47,7 @@ const HERO_SLIDES = [
   },
 ];
 
-function Hero() {
+function Hero({ revealReady = true }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [previousSlide, setPreviousSlide] = useState(null);
   const [failedImages, setFailedImages] = useState({});
@@ -56,6 +56,7 @@ function Hero() {
   const parallaxRef = useRef(null);
   const contentRef = useRef(null);
   const fadeTimeoutRef = useRef(null);
+  const hasAnimatedEntranceRef = useRef(false);
 
   const primaryMagnetic = useMagneticButton(0.2);
   const secondaryMagnetic = useMagneticButton(0.2);
@@ -104,7 +105,11 @@ function Hero() {
     };
   }, []);
 
+  // Synchronized hero headline & CTA entrance when cabinet doors part open
   useEffect(() => {
+    if (!revealReady || hasAnimatedEntranceRef.current) return undefined;
+    hasAnimatedEntranceRef.current = true;
+
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -116,19 +121,32 @@ function Hero() {
       if (revealItems && revealItems.length > 0) {
         gsap.fromTo(
           revealItems,
-          { y: 36, opacity: 0 },
+          { y: 34, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            duration: 1,
-            stagger: 0.14,
-            ease: 'power3.out',
-            delay: 0.12,
-            clearProps: 'transform',
+            duration: 0.95,
+            stagger: 0.12,
+            ease: 'power4.out',
+            delay: 0.08,
+            clearProps: 'transform,opacity',
           }
         );
       }
+    }, sectionRef);
 
+    return () => ctx.revert();
+  }, [revealReady]);
+
+  // Subtle background parallax on scroll
+  useEffect(() => {
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) return undefined;
+
+    const ctx = gsap.context(() => {
       if (parallaxRef.current && sectionRef.current) {
         gsap.to(parallaxRef.current, {
           yPercent: 12,
@@ -268,7 +286,7 @@ function Hero() {
       </button>
 
       {/* Main Content Overlay — Bottom Left */}
-      <div className="relative z-30 flex h-full w-full flex-col justify-end px-6 pb-20 sm:px-10 md:px-14 md:pb-24 lg:px-20 lg:pb-28">
+      <div className="relative z-30 flex h-full w-full flex-col justify-end px-6 pb-28 sm:px-10 md:px-14 md:pb-32 lg:px-20 lg:pb-28">
         <div ref={contentRef} className="max-w-5xl">
           <div className="hero-reveal mb-4 flex items-center gap-3 md:mb-5">
             <span className="h-px w-8 bg-bronze" aria-hidden="true" />
@@ -324,14 +342,15 @@ function Hero() {
       </div>
 
       {/* Bottom Controls: Collection Indicator, Scroll Cue, Slide Dots */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-6 z-30 flex items-center justify-between px-6 sm:px-10 md:bottom-8 md:px-14 lg:px-20">
-        {/* Slide Label */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-14 z-30 flex items-center justify-between px-6 sm:px-10 md:px-14 lg:bottom-8 lg:pl-20 lg:pr-36">
+        {/* Slide Label: compact 01 / 04 on tablet, full caption on desktop (1024px+) */}
         <div className="hidden items-center gap-3 text-xs tracking-[0.18em] text-pure-white/75 uppercase md:flex">
           <span className="font-body font-medium text-pure-white">
             0{currentSlide + 1}
           </span>
-          <span className="h-px w-5 bg-pure-white/35" aria-hidden="true" />
-          <span className="font-body">{HERO_SLIDES[currentSlide].caption}</span>
+          <span className="h-px w-4 bg-pure-white/35" aria-hidden="true" />
+          <span className="font-body lg:hidden">0{HERO_SLIDES.length}</span>
+          <span className="hidden font-body lg:inline">{HERO_SLIDES[currentSlide].caption}</span>
         </div>
 
         {/* Center Animated Scroll Indicator */}
